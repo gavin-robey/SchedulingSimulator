@@ -1,74 +1,32 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
+import java.util.Comparator;
 
-public class SchedulerSJF implements Scheduler {
-    private int contextSwitches = 0;
-    private ArrayList<Process> processes = new ArrayList<>();
-    private Platform platform;
-    private Queue<Process> readyQueue = new LinkedList<>();
-    private boolean notComplete = true;
+public class SchedulerSJF extends HelperPriority implements Scheduler {
+    private static ProcessComparator compare = new ProcessComparator();
     
     public SchedulerSJF(Platform platform) {
-        this.platform = platform;
+        super(platform, compare);
     }
 
     @Override
     public int getNumberOfContextSwitches() {
-        return this.contextSwitches;
+        return super.getNumberOfContextSwitches();
     }
 
     @Override
     public void notifyNewProcess(Process p) {
-        processes.add(p);
-        
-    }
-
-    private void sort(){
-        this.processes.sort((o1, o2) -> Integer.valueOf(o1.getBurstTime()).compareTo(Integer.valueOf(o2.getBurstTime())));
-        for(Process process : processes){
-            this.readyQueue.add(process);
-        }
+        super.notifyNewProcess(p);
     }
 
     @Override
-    // Fix context switching code
     public Process update(Process cpu) {
+        return super.update(cpu);
+    }
 
-        // Ensures Sort only runs once, this way the queue is not updated multiple times
-        if(notComplete){
-            sort();
-            this.notComplete = false;
-        }
+    private static class ProcessComparator implements Comparator<Process> {
 
-        Process currentProcess;
-        try {
-            if (cpu == null) {
-                currentProcess = readyQueue.remove();
-                platform.log("Scheduled: " + currentProcess.getName());
-            } else {
-                if(cpu.isExecutionComplete() && cpu.isBurstComplete()){
-                    platform.log("Process " + cpu.getName() + " burst complete");
-                    platform.log("Process " + cpu.getName() + " execution complete");
-                    currentProcess = readyQueue.remove();
-                    platform.log("Scheduled: " + currentProcess.getName());
-                }else if(cpu.isExecutionComplete() && !cpu.isBurstComplete()){
-                    platform.log("Process " + cpu.getName() + " execution complete");
-                    currentProcess = readyQueue.remove();
-                    platform.log("Scheduled: " + currentProcess.getName());
-                }else if(cpu.isBurstComplete()){
-                    readyQueue.add(cpu);
-                    platform.log("Process " + cpu.getName() + " burst complete");
-                    currentProcess = readyQueue.remove();
-                    platform.log("Scheduled: " + currentProcess.getName());
-                } else {
-                    currentProcess = cpu;
-                }
-            }
-        } catch (NoSuchElementException e) {
-            currentProcess = null;
+        @Override
+        public int compare(Process p1, Process p2) {
+            return Integer.compare(p1.getBurstTime(), p2.getBurstTime());
         }
-        return currentProcess;
     }
 }
