@@ -45,19 +45,21 @@ public class SchedulerSJF implements Scheduler {
         Process currentProcess;
         try {
             if (cpu == null) {
-                contextSwitches++;
                 currentProcess = readyQueue.remove();
                 platform.log("Scheduled: " + currentProcess.getName());
             } else {
-                if (cpu.isBurstComplete()) {
+                if(cpu.isExecutionComplete() && cpu.isBurstComplete()){
                     platform.log("Process " + cpu.getName() + " burst complete");
-                    if (!cpu.isExecutionComplete()) {
-                        readyQueue.add(cpu);
-                    }else{
-                        contextSwitches++;
-                        platform.log("Process " + cpu.getName() + " execution complete");
-                    }
-                    contextSwitches++;
+                    platform.log("Process " + cpu.getName() + " execution complete");
+                    currentProcess = readyQueue.remove();
+                    platform.log("Scheduled: " + currentProcess.getName());
+                }else if(cpu.isExecutionComplete() && !cpu.isBurstComplete()){
+                    platform.log("Process " + cpu.getName() + " execution complete");
+                    currentProcess = readyQueue.remove();
+                    platform.log("Scheduled: " + currentProcess.getName());
+                }else if(cpu.isBurstComplete()){
+                    readyQueue.add(cpu);
+                    platform.log("Process " + cpu.getName() + " burst complete");
                     currentProcess = readyQueue.remove();
                     platform.log("Scheduled: " + currentProcess.getName());
                 } else {
