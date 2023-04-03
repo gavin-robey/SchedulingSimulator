@@ -1,3 +1,4 @@
+package SchedulingAlgorithms;
 /**
  * Really hated to make such a small base class, but did so in order to
  * not repeat this simple boilerplate code needed for all schedulers.

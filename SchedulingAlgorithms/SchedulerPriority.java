@@ -1,9 +1,12 @@
+package SchedulingAlgorithms;
 import java.util.Comparator;
 
-public class SchedulerSJF extends HelperPriority implements Scheduler {
+import Driver.Platform;
+import Driver.Process;
+public class SchedulerPriority extends HelperPriority implements Scheduler {
     private static ProcessComparator compare = new ProcessComparator();
     
-    public SchedulerSJF(Platform platform) {
+    public SchedulerPriority(Platform platform) {
         super(platform, compare);
     }
 
@@ -26,7 +29,7 @@ public class SchedulerSJF extends HelperPriority implements Scheduler {
 
         @Override
         public int compare(Process p1, Process p2) {
-            return Integer.compare(p1.getBurstTime(), p2.getBurstTime());
+            return Integer.compare(p1.getPriority(), p2.getPriority());
         }
     }
 }

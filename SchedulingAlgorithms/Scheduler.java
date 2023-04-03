@@ -1,3 +1,6 @@
+package SchedulingAlgorithms;
+import Driver.Process;
+
 /**
  * This interface defines the behaviors required of any scheduler.
  */

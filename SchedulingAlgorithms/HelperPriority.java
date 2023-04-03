@@ -1,5 +1,9 @@
+package SchedulingAlgorithms;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import Driver.Platform;
+import Driver.Process;
 
 public class HelperPriority {
     private int contextSwitches = 0;

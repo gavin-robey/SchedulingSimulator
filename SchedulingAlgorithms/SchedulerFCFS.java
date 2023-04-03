@@ -1,6 +1,10 @@
+package SchedulingAlgorithms;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+
+import Driver.Platform;
+import Driver.Process;
 
 public class SchedulerFCFS implements Scheduler {
     private int contextSwitches = 0;
